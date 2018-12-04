@@ -10,5 +10,7 @@ namespace Fogy.Core.Domain.Repositories
     public interface IConnectionStringProvider : ISingletonDependency
     {
         string GetConnectionString();
+
+        string GetConnectionString(string connectionStringName);
     }
 }

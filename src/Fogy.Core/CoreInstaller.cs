@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Fogy.Core.Dependency;
+using Fogy.Core.Domain.Repositories;
 using Fogy.Core.Logging;
 using Fogy.Core.Reflection;
 
@@ -21,6 +22,8 @@ namespace Fogy.Core
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<AssemblyFinder>().As<IAssemblyFinder>().SingleInstance();
+
+            builder.RegisterType<ConnectionStringProvider>().As<IConnectionStringProvider>().SingleInstance();
 
             var assemblyFinder = new AssemblyFinder();
             var assemblies = assemblyFinder.GetAllAssemblies();
