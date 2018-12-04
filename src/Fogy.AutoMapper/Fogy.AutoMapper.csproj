@@ -52,8 +52,10 @@
   <ItemGroup>
     <Compile Include="AutoMapAttribute.cs" />
     <Compile Include="AutoMapAttributeBase.cs" />
+    <Compile Include="AutoMapExtensions.cs" />
     <Compile Include="AutoMapFromAttribute.cs" />
     <Compile Include="AutoMapperConfigurationExtensions.cs" />
+    <Compile Include="AutoMapperObjectMapper.cs" />
     <Compile Include="AutoMapToAttribute.cs" />
     <Compile Include="MapperInstaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
