@@ -92,4 +92,12 @@ namespace Fogy.Dapper
             });
         }
     }
+
+    public abstract class RepositoryBase<TEntity> : RepositoryBase<TEntity, int> where TEntity : class, IEntity
+    {
+        public RepositoryBase(IConnectionStringProvider provider)
+            : base(provider)
+        {
+        }
+    }
 }

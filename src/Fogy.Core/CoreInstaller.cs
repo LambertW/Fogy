@@ -23,7 +23,7 @@ namespace Fogy.Core
 
             builder.RegisterType<AssemblyFinder>().As<IAssemblyFinder>().SingleInstance();
 
-            builder.RegisterType<ConnectionStringProvider>().As<IConnectionStringProvider>().SingleInstance();
+            builder.RegisterType<ConnectionStringProvider>().As<IConnectionStringProvider>().IfNotRegistered(typeof(IConnectionStringProvider)).SingleInstance();
 
             var assemblyFinder = new AssemblyFinder();
             var assemblies = assemblyFinder.GetAllAssemblies();
