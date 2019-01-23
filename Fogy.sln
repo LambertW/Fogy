@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiDemo.Dapper", "sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiDemo.Application", "samples\WebApiDemo.Application\WebApiDemo.Application.csproj", "{2621B870-8D37-489E-B5CF-983AB50D6364}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiDemo.Api", "samples\WebApiDemo.Api\WebApiDemo.Api.csproj", "{52793968-B548-4ECB-A213-BFB0EB5CAAE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{2621B870-8D37-489E-B5CF-983AB50D6364}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2621B870-8D37-489E-B5CF-983AB50D6364}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2621B870-8D37-489E-B5CF-983AB50D6364}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52793968-B548-4ECB-A213-BFB0EB5CAAE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52793968-B548-4ECB-A213-BFB0EB5CAAE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52793968-B548-4ECB-A213-BFB0EB5CAAE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52793968-B548-4ECB-A213-BFB0EB5CAAE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{A34C4E79-9B03-4BAF-8916-652D3918FB9C} = {6F364A61-DDA7-4AA1-8AFB-27B01F48D1B7}
 		{DDCAC067-28B7-40EE-B60B-46D3F75494ED} = {6F364A61-DDA7-4AA1-8AFB-27B01F48D1B7}
 		{2621B870-8D37-489E-B5CF-983AB50D6364} = {6F364A61-DDA7-4AA1-8AFB-27B01F48D1B7}
+		{52793968-B548-4ECB-A213-BFB0EB5CAAE7} = {6F364A61-DDA7-4AA1-8AFB-27B01F48D1B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FB2AA5A-6639-42C3-8FAA-E1C723D8D4DE}

@@ -12,11 +12,11 @@ namespace Fogy.AutoMapper
 {
     public class MapperInstaller : Autofac.Module
     {
-        private IAssemblyFinder _assemblyFinder;
+        //private IAssemblyFinder _assemblyFinder;
 
-        public MapperInstaller(IAssemblyFinder assemblyFinder)
+        public MapperInstaller()
         {
-            _assemblyFinder = assemblyFinder;
+            //_assemblyFinder = assemblyFinder;
         }
 
 
@@ -37,7 +37,7 @@ namespace Fogy.AutoMapper
 
         private void FindAndAutoMapTypes(IMapperConfigurationExpression configuration)
         {
-            var assemblies = _assemblyFinder.GetAllAssemblies();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
             var types = assemblies.SelectMany(t => t.GetTypes()).Where(t =>
             {
