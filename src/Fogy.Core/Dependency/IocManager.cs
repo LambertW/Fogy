@@ -9,6 +9,6 @@ namespace Fogy.Core.Dependency
 {
     public class IocManager : IIocManager
     {
-        public IContainer IocContainer => throw new NotImplementedException();
+        public IContainer IocContainer { get; }
     }
 }
