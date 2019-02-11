@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,6 +70,8 @@
     <Compile Include="Reflection\AssemblyFinder.cs" />
     <Compile Include="Reflection\IAssemblyFinder.cs" />
     <Compile Include="Reflection\ITypeFinder.cs" />
+    <Compile Include="Security\EncryptExtensions.cs" />
+    <Compile Include="Security\VerificationCodeExtensions.cs" />
     <Compile Include="Web\Enums\ResponseMessageEnum.cs" />
     <Compile Include="Web\Models\AjaxResponse.cs" />
     <Compile Include="Web\Models\ErrorInfo.cs" />
