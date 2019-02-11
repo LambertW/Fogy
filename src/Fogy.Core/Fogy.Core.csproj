@@ -60,6 +60,7 @@
     <Compile Include="Domain\Repositories\IConnectionStringProvider.cs" />
     <Compile Include="Domain\Repositories\IRepository.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Json\JsonExtensions.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\NullLogger.cs" />
