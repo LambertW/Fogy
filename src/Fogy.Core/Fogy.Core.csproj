@@ -85,6 +85,7 @@
     <Compile Include="Web\Enums\ResponseMessageEnum.cs" />
     <Compile Include="Web\Models\AjaxResponse.cs" />
     <Compile Include="Web\Models\ErrorInfo.cs" />
+    <Compile Include="Web\Models\MvcAjaxResponse.cs" />
     <Compile Include="Web\Models\ValicationErrorInfo.cs" />
   </ItemGroup>
   <ItemGroup>
