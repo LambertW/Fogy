@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\Services\Dto\IPagedResult.cs" />
+    <Compile Include="Application\Services\Dto\IPagedResultRequest.cs" />
+    <Compile Include="Application\Services\Dto\ISortedResultItem.cs" />
+    <Compile Include="Application\Services\Dto\PagedResultDto.cs" />
+    <Compile Include="Application\Services\Dto\PagedResultRequestDto.cs" />
+    <Compile Include="Application\Services\Dto\SortedResultItem.cs" />
     <Compile Include="Application\Services\IApplicationService.cs" />
     <Compile Include="Collections\Extensions\CollectionExtensions.cs" />
     <Compile Include="CoreInstaller.cs" />
@@ -56,7 +62,11 @@
     <Compile Include="Dependency\IocManager.cs" />
     <Compile Include="Dependency\ISingletonDependency.cs" />
     <Compile Include="Dependency\ITransientDependency.cs" />
+    <Compile Include="Domain\Entities\Auditing\IHasCreationTime.cs" />
+    <Compile Include="Domain\Entities\Auditing\IHasDeletionTime.cs" />
+    <Compile Include="Domain\Entities\Auditing\IHasModificationTime.cs" />
     <Compile Include="Domain\Entities\IEntity.cs" />
+    <Compile Include="Domain\Entities\IPassivable.cs" />
     <Compile Include="Domain\Repositories\ConnectionStringProvider.cs" />
     <Compile Include="Domain\Repositories\IConnectionStringProvider.cs" />
     <Compile Include="Domain\Repositories\IRepository.cs" />

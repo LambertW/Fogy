@@ -1,4 +1,5 @@
-﻿using Fogy.Core.Domain.Entities;
+﻿using Fogy.Core.Application.Services.Dto;
+using Fogy.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace Fogy.Core.Domain.Repositories
 
         Task<TEntity> GetAsync(TPrimaryKey id);
 
+        Task<PagedResultDto<TEntity>> GetPagedAsync(IPagedResultRequest request);
+
         #endregion
 
-        Task<TEntity> InsertAsync(TEntity entity);
+        Task<TPrimaryKey> InsertAsync(TEntity entity);
 
         Task<bool> UpdateAsync(TEntity entity);
 

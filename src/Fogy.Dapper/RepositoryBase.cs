@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using DapperExtensions;
+using Fogy.Core.Application.Services.Dto;
+using Fogy.Core.Domain.Entities.Auditing;
 
 namespace Fogy.Dapper
 {
@@ -46,6 +48,10 @@ namespace Fogy.Dapper
         {
             return await WithConnection(async c =>
             {
+                if (entity is IHasDeletionTime)
+                    ((IHasDeletionTime)entity).DeletionTime = DateTime.Now;
+                //TODO SoftDelete
+
                 return await c.DeleteAsync(entity);
             });
         }
@@ -55,6 +61,9 @@ namespace Fogy.Dapper
             return await WithConnection(async c =>
             {
                 var entity = await c.GetAsync<TEntity>(id);
+
+                if (entity is IHasDeletionTime)
+                    ((IHasDeletionTime)entity).DeletionTime = DateTime.Now;
 
                 return await c.DeleteAsync(entity);
             });
@@ -76,10 +85,13 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<TEntity> InsertAsync(TEntity entity)
+        public async Task<TPrimaryKey> InsertAsync(TEntity entity)
         {
             return await WithConnection(async c =>
             {
+                if (entity is IHasCreationTime)
+                    ((IHasCreationTime)entity).CreationTime = DateTime.Now;
+
                 return await c.InsertAsync(entity);
             });
         }
@@ -88,7 +100,34 @@ namespace Fogy.Dapper
         {
             return await WithConnection(async c =>
             {
+                if (entity is IHasModificationTime)
+                    ((IHasModificationTime)entity).LastModificationTime = DateTime.Now;
+
                 return await c.UpdateAsync(entity);
+            });
+        }
+
+        public async Task<PagedResultDto<TEntity>> GetPagedAsync(IPagedResultRequest request)
+        {
+            return await WithConnection(async c =>
+            {
+                var queryCount = await c.CountAsync<TEntity>(request.Predicate);
+
+                var sortList = new List<ISort>();
+                if (!request.Sorts.Any())
+                {
+                    sortList.Add(Predicates.Sort<TEntity>(t => t.Id));
+                }
+                else
+                {
+                    sortList.AddRange(request.Sorts.Select(t => new Sort { Ascending = t.Ascending, PropertyName = t.PropertyName }));
+                }
+
+                var queryResult = await c.GetPageAsync<TEntity>(request.Predicate, sortList, request.PageIndex, request.ItemsPerPage);
+
+                var result = new PagedResultDto<TEntity>(request, queryCount, queryResult.ToList());
+
+                return result;
             });
         }
     }
