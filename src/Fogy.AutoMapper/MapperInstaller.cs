@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
 using Fogy.Core.Reflection;
+using IObjectMapper = Fogy.Core.ObjectMapper.IObjectMapper;
 
 namespace Fogy.AutoMapper
 {
@@ -32,7 +33,7 @@ namespace Fogy.AutoMapper
             builder.RegisterInstance(Mapper.Configuration).As<IConfigurationProvider>().SingleInstance();
             builder.RegisterInstance(Mapper.Instance).As<IMapper>().SingleInstance();
 
-            //builder.RegisterType<AUtomap>
+            builder.RegisterType<AutoMapperObjectMapper>().As<IObjectMapper>().SingleInstance();
         }
 
         private void FindAndAutoMapTypes(IMapperConfigurationExpression configuration)

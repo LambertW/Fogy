@@ -123,7 +123,7 @@ namespace Fogy.Dapper
                     sortList.AddRange(request.Sorts.Select(t => new Sort { Ascending = t.Ascending, PropertyName = t.PropertyName }));
                 }
 
-                var queryResult = await c.GetPageAsync<TEntity>(request.Predicate, sortList, request.PageIndex, request.ItemsPerPage);
+                var queryResult = await c.GetPageAsync<TEntity>(request.Predicate, sortList, request.PageIndex - 1, request.ItemsPerPage);
 
                 var result = new PagedResultDto<TEntity>(request, queryCount, queryResult.ToList());
 
