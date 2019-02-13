@@ -17,9 +17,9 @@ namespace Fogy.AutoMapper
             return _mapper.Map<TDestincation>(source);
         }
 
-        public TDestincation Map<TSource, TDestincation>(TSource source, TDestincation destincation)
+        public TDestincation Map<TSource, TDestincation>(TSource source, TDestincation destination)
         {
-            return _mapper.Map<TSource, TDestincation>(source);
+            return _mapper.Map(source, destination);
         }
     }
 }

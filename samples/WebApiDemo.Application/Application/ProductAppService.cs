@@ -31,7 +31,7 @@ namespace WebApiDemo.Application.Application
 
         public async Task<List<ProductDto>> GetProducts()
         {
-            var list = await  _productRepository.GetAllAsync();
+            var list = await  _productRepository.GetListAsync();
             return list.MapTo<List<ProductDto>>();
         }
 

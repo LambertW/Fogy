@@ -44,7 +44,7 @@ namespace Fogy.Dapper
             }
         }
 
-        public async Task<bool> DeleteAsync(TEntity entity)
+        public virtual async Task<bool> DeleteAsync(TEntity entity)
         {
             return await WithConnection(async c =>
             {
@@ -56,7 +56,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<bool> DeleteAsync(TPrimaryKey id)
+        public virtual async Task<bool> DeleteAsync(TPrimaryKey id)
         {
             return await WithConnection(async c =>
             {
@@ -69,7 +69,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> GetListAsync()
         {
             return await WithConnection(async c =>
             {
@@ -77,7 +77,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<TEntity> GetAsync(TPrimaryKey id)
+        public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
         {
             return await WithConnection(async c =>
             {
@@ -85,7 +85,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<TPrimaryKey> InsertAsync(TEntity entity)
+        public virtual async Task<TPrimaryKey> InsertAsync(TEntity entity)
         {
             return await WithConnection(async c =>
             {
@@ -96,7 +96,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<bool> UpdateAsync(TEntity entity)
+        public virtual async Task<bool> UpdateAsync(TEntity entity)
         {
             return await WithConnection(async c =>
             {
@@ -107,7 +107,7 @@ namespace Fogy.Dapper
             });
         }
 
-        public async Task<PagedResultDto<TEntity>> GetPagedAsync(IPagedResultRequest request)
+        public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(IPagedResultRequest request)
         {
             return await WithConnection(async c =>
             {
@@ -128,6 +128,49 @@ namespace Fogy.Dapper
                 var result = new PagedResultDto<TEntity>(request, queryCount, queryResult.ToList());
 
                 return result;
+            });
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> GetListAsync(object predicate)
+        {
+            return await WithConnection(async c =>
+            {
+                return await c.GetListAsync<TEntity>(predicate);
+            });
+        }
+
+        public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            keyword = $"%{keyword}%";
+
+            return await GetPagedAsync(null, pageIndex, pageSize);
+        }
+
+        public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new PagedResultRequestDto
+            {
+                ItemsPerPage = pageSize,
+                PageIndex = pageIndex,
+                Predicate = predicate
+            };
+
+            return await GetPagedAsync(request);
+        }
+
+        public virtual async Task<int> CountAsync(object predicate)
+        {
+            return await WithConnection(async c =>
+            {
+                return await c.CountAsync<TEntity>(predicate);
+            });
+        }
+
+        public virtual async Task<bool> DeleteAsync(object predicate)
+        {
+            return await WithConnection(async c =>
+            {
+                return await c.DeleteAsync(predicate);
             });
         }
     }

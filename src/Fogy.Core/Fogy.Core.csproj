@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\Services\AsyncCrudAppServiceBase.cs" />
+    <Compile Include="Application\Services\Dto\IEntityDto.cs" />
     <Compile Include="Application\Services\Dto\IPagedResult.cs" />
     <Compile Include="Application\Services\Dto\IPagedResultRequest.cs" />
     <Compile Include="Application\Services\Dto\ISortedResultItem.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="Application\Services\Dto\PagedResultRequestDto.cs" />
     <Compile Include="Application\Services\Dto\SortedResultItem.cs" />
     <Compile Include="Application\Services\IApplicationService.cs" />
+    <Compile Include="Application\Services\IAsyncCrudAppService.cs" />
     <Compile Include="Collections\Extensions\CollectionExtensions.cs" />
     <Compile Include="CoreInstaller.cs" />
     <Compile Include="Dependency\IIocManager.cs" />

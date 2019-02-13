@@ -33,7 +33,7 @@ namespace Fogy.AutoMapper
             builder.RegisterInstance(Mapper.Configuration).As<IConfigurationProvider>().SingleInstance();
             builder.RegisterInstance(Mapper.Instance).As<IMapper>().SingleInstance();
 
-            builder.RegisterType<AutoMapperObjectMapper>().As<IObjectMapper>().SingleInstance();
+            builder.RegisterType<AutoMapperObjectMapper>().As<IObjectMapper>().PropertiesAutowired().SingleInstance();
         }
 
         private void FindAndAutoMapTypes(IMapperConfigurationExpression configuration)

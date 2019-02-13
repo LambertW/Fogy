@@ -16,13 +16,20 @@ namespace Fogy.Core.Domain.Repositories
     {
         #region Select/Get/Query
 
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetListAsync();
+
+        Task<IEnumerable<TEntity>> GetListAsync(object predicate);
 
         Task<TEntity> GetAsync(TPrimaryKey id);
 
         Task<PagedResultDto<TEntity>> GetPagedAsync(IPagedResultRequest request);
 
+        Task<PagedResultDto<TEntity>> GetPagedAsync(string keyword, int pageIndex = 1, int pageSize = 10);
+
+        Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, int pageIndex = 1, int pageSize = 10);
         #endregion
+
+        Task<int> CountAsync(object predicate);
 
         Task<TPrimaryKey> InsertAsync(TEntity entity);
 
@@ -31,6 +38,8 @@ namespace Fogy.Core.Domain.Repositories
         Task<bool> DeleteAsync(TEntity entity);
 
         Task<bool> DeleteAsync(TPrimaryKey id);
+
+        Task<bool> DeleteAsync(object predicate);
     }
 
     public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>
