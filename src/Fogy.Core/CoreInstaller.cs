@@ -35,12 +35,16 @@ namespace Fogy.Core
             var transientType = typeof(ITransientDependency);
             builder.RegisterAssemblyTypes(assembly)
                 .Where(t => transientType.IsAssignableFrom(t) && t != transientType)
-                .AsImplementedInterfaces().InstancePerDependency();
+                .AsImplementedInterfaces()
+                .InstancePerDependency()
+                .PropertiesAutowired();
 
             var singletonType = typeof(ISingletonDependency);
             builder.RegisterAssemblyTypes(assembly)
                 .Where(t => singletonType.IsAssignableFrom(t) && t != singletonType)
-                .AsImplementedInterfaces().SingleInstance();
+                .AsImplementedInterfaces()
+                .SingleInstance()
+                .PropertiesAutowired();
         }
     }
 }

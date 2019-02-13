@@ -14,7 +14,7 @@ namespace Fogy.Core.Application.Services
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
     {
-        public IObjectMapper ObjectMapper { get; set; }
+        public virtual IObjectMapper ObjectMapper { get; set; }
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
 
         protected AsyncCrudAppServiceBase(IRepository<TEntity, TPrimaryKey> repository)
