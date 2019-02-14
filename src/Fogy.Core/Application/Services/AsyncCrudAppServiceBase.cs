@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace Fogy.Core.Application.Services
 {
-    public abstract class AsyncCrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey> : IAsyncCrudAppService<TEntity, TEntityDto, TPrimaryKey>
+    public abstract class AsyncCrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TInsertInput, TUpdateInput> : IAsyncCrudAppService<TEntity, TEntityDto, TPrimaryKey, TInsertInput, TUpdateInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
+        where TUpdateInput : IEntityDto<TPrimaryKey>
+
     {
         public virtual IObjectMapper ObjectMapper { get; set; }
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
@@ -28,7 +30,7 @@ namespace Fogy.Core.Application.Services
             return ObjectMapper.Map<TEntityDto>(entity);
         }
 
-        public async virtual Task<TPrimaryKey> Insert(TEntityDto input)
+        public async virtual Task<TPrimaryKey> Insert(TInsertInput input)
         {
             var entity = ObjectMapper.Map<TEntity>(input);
             var primaryKey = await Repository.InsertAsync(entity);
@@ -36,7 +38,7 @@ namespace Fogy.Core.Application.Services
             return primaryKey;
         }
 
-        public async virtual Task<bool> Update(TEntityDto input)
+        public async virtual Task<bool> Update(TUpdateInput input)
         {
             var entity = await Repository.GetAsync(input.Id);
             MapToEntity(input, entity);
@@ -67,7 +69,7 @@ namespace Fogy.Core.Application.Services
             return ObjectMapper.Map<IPagedResult<TEntityDto>>(page);
         }
 
-        protected virtual void MapToEntity(TEntityDto updateInput, TEntity entity)
+        protected virtual void MapToEntity(TUpdateInput updateInput, TEntity entity)
         {
             ObjectMapper.Map(updateInput, entity);
         }

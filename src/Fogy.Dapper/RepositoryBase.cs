@@ -143,7 +143,7 @@ namespace Fogy.Dapper
         {
             keyword = $"%{keyword}%";
 
-            return await GetPagedAsync(null, pageIndex, pageSize);
+            return await GetPagedAsync(new { }, pageIndex, pageSize);
         }
 
         public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, int pageIndex = 1, int pageSize = 10)

@@ -1,4 +1,5 @@
 ﻿using Fogy.Core.Application.Services.Dto;
+using Fogy.Core.Dependency;
 using Fogy.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Fogy.Core.Domain.Repositories
 {
-    public interface IRepository
+    public interface IRepository : ITransientDependency
     {
     }
 
