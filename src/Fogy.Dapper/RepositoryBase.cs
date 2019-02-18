@@ -143,10 +143,10 @@ namespace Fogy.Dapper
         {
             keyword = $"%{keyword}%";
 
-            return await GetPagedAsync(new { }, pageIndex, pageSize);
+            return await GetPagedAsync(new { }, null, pageIndex, pageSize);
         }
 
-        public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, int pageIndex = 1, int pageSize = 10)
+        public virtual async Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, IList<ISortedResultItem> sorts, int pageIndex = 1, int pageSize = 10)
         {
             var request = new PagedResultRequestDto
             {
@@ -154,6 +154,10 @@ namespace Fogy.Dapper
                 PageIndex = pageIndex,
                 Predicate = predicate
             };
+            if(sorts != null && sorts.Any())
+            {
+                sorts.ToList().ForEach(t => request.Sorts.Add(t)); 
+            }
 
             return await GetPagedAsync(request);
         }

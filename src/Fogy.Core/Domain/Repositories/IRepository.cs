@@ -27,7 +27,7 @@ namespace Fogy.Core.Domain.Repositories
 
         Task<PagedResultDto<TEntity>> GetPagedAsync(string keyword, int pageIndex = 1, int pageSize = 10);
 
-        Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, int pageIndex = 1, int pageSize = 10);
+        Task<PagedResultDto<TEntity>> GetPagedAsync(object predicate, IList<ISortedResultItem> sorts, int pageIndex = 1, int pageSize = 10);
         #endregion
 
         Task<int> CountAsync(object predicate);
