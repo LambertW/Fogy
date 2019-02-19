@@ -14,5 +14,8 @@ namespace Fogy.Dapper.Application.Services
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
     {
+        Task<List<TEntityDto>> GetList(object predicate);
+
+        Task<IPagedResult<TEntityDto>> GetList(string keyword, int pageIndex, int pageSize);
     }
 }
