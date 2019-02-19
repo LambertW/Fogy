@@ -19,9 +19,5 @@ namespace Fogy.Core.Application.Services
         Task<bool> Delete(TPrimaryKey id);
 
         Task<List<TEntityDto>> GetList();
-
-        Task<List<TEntityDto>> GetList(object predicate);
-
-        Task<IPagedResult<TEntityDto>> GetList(string keyword, int pageIndex, int pageSize);
     }
 }
