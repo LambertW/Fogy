@@ -140,7 +140,7 @@ namespace Fogy.Dapper.Application.Services
         public async virtual Task<List<TEntityDto>> GetList(Expression<Func<TEntity, bool>> predicate)
         {
             var list = await Repository.GetAllAsync(predicate);
-            return ObjectMapper.Map<List<TEntityDto>>(list);
+            return list.Select(t => MapToEntityDto(t)).ToList();
         }
     }
 }
