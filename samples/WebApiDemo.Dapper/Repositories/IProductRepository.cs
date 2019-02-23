@@ -1,5 +1,6 @@
 ﻿using Fogy.Core.Dependency;
 using Fogy.Core.Domain.Repositories;
+using Fogy.Dapper.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using WebApiDemo.Core.Domain;
 
 namespace WebApiDemo.Dapper.Repositories
 {
-    public interface IProductRepository : ITransientDependency, IRepository<Product>
+    public interface IProductRepository : IDapperRepository<Product, int>
     {
 
     }

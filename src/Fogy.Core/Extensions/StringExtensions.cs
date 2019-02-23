@@ -23,7 +23,7 @@ namespace Fogy.Core.Extensions
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmptySpace(this string str)
+        public static bool IsNullOrWhiteSpace(this string str)
         {
             return string.IsNullOrWhiteSpace(str);
         }

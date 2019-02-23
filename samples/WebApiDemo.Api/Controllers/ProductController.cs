@@ -27,7 +27,7 @@ namespace WebApiDemo.Api.Controllers
 
         public async Task<IEnumerable<ProductDto>> Get()
         {
-            var list = await _productRepository.GetListAsync();
+            var list = await _productRepository.GetAllAsync();
             return list.MapTo<List<ProductDto>>();
         }
 

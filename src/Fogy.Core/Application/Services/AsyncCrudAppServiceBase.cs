@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 
 namespace Fogy.Core.Application.Services
 {
-    public abstract class AsyncCrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TInsertInput, TUpdateInput> : IAsyncCrudAppService<TEntity, TEntityDto, TPrimaryKey, TInsertInput, TUpdateInput>
+    public abstract class AsyncCrudAppServiceBase<TEntity, TEntityDto, TPrimaryKey, TGetAllInput, TInsertInput, TUpdateInput, TGetInput, TDeleteInput> 
+        : IAsyncCrudAppService<TEntityDto, TPrimaryKey, TGetAllInput, TInsertInput, TUpdateInput, TGetInput, TDeleteInput>
         where TEntity : class, IEntity<TPrimaryKey>
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
-
+        where TGetInput : IEntityDto<TPrimaryKey>
+        where TDeleteInput : IEntityDto<TPrimaryKey>
     {
         public virtual IObjectMapper ObjectMapper { get; set; }
         protected readonly IRepository<TEntity, TPrimaryKey> Repository;
@@ -24,42 +26,57 @@ namespace Fogy.Core.Application.Services
             Repository = repository;
         }
 
-        public async virtual Task<TEntityDto> Get(TPrimaryKey id)
+        public async virtual Task<TEntityDto> Get(TGetInput input)
         {
-            var entity = await Repository.GetAsync(id);
-            return ObjectMapper.Map<TEntityDto>(entity);
+            var entity = await Repository.GetAsync(input.Id);
+            return MapToEntityDto(entity);
         }
 
-        public async virtual Task<TPrimaryKey> Insert(TInsertInput input)
+        public async virtual Task<TEntityDto> Insert(TInsertInput input)
         {
-            var entity = ObjectMapper.Map<TEntity>(input);
-            var primaryKey = await Repository.InsertAsync(entity);
+            var entity = MapToEntity(input);
+            var primaryKey = await Repository.InsertAndGetIdAsync(entity);
 
-            return primaryKey;
+            return MapToEntityDto(entity);
         }
 
-        public async virtual Task<bool> Update(TUpdateInput input)
+        public async virtual Task<TEntityDto> Update(TUpdateInput input)
         {
             var entity = await Repository.GetAsync(input.Id);
             MapToEntity(input, entity);
 
-            return await Repository.UpdateAsync(entity);
+            var result = await Repository.UpdateAsync(entity);
+
+            return MapToEntityDto(entity);
         }
 
-        public async virtual Task<bool> Delete(TPrimaryKey id)
+        public async virtual Task<bool> Delete(TDeleteInput input)
         {
-            return await Repository.DeleteAsync(id);
+            return await Repository.DeleteAsync(input.Id);
         }
 
-        public async virtual Task<List<TEntityDto>> GetList()
+        public async virtual Task<PagedResultDto<TEntityDto>> GetAll(TGetAllInput input)
         {
-            var list = await Repository.GetListAsync();
-            return ObjectMapper.Map<List<TEntityDto>>(list);
+            var list = await Repository.GetAllAsync();
+
+            var totalCount = await Repository.CountAsync(null);
+            // TODO
+            return new PagedResultDto<TEntityDto>(0, 0, totalCount, list.Select(t => MapToEntityDto(t)).ToList());
         }
 
         protected virtual void MapToEntity(TUpdateInput updateInput, TEntity entity)
         {
             ObjectMapper.Map(updateInput, entity);
+        }
+
+        protected virtual TEntity MapToEntity(TInsertInput entity)
+        {
+            return ObjectMapper.Map<TEntity>(entity);
+        }
+
+        protected virtual TEntityDto MapToEntityDto(TEntity entity)
+        {
+            return ObjectMapper.Map<TEntityDto>(entity);
         }
     }
 }

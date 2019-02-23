@@ -37,5 +37,13 @@ namespace Fogy.Core.Application.Services.Dto
             ItemsPerPage = request.ItemsPerPage;
             Items = items;
         }
+
+        public PagedResultDto(int pageIndex, int itemsPerPage, long totalItems, IReadOnlyList<T> items)
+        {
+            CurrentPage = pageIndex;
+            ItemsPerPage = itemsPerPage;
+            TotalItems = totalItems;
+            Items = items;
+        }
     }
 }

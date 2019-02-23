@@ -55,6 +55,10 @@
       <Project>{14BC045D-C26D-48CF-99D0-AB21577D6837}</Project>
       <Name>Fogy.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Fogy.Dapper\Fogy.Dapper.csproj">
+      <Project>{f864dbf9-adf3-47f6-b658-18b3b727e23f}</Project>
+      <Name>Fogy.Dapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebApiDemo.Core\WebApiDemo.Core.csproj">
       <Project>{A34C4E79-9B03-4BAF-8916-652D3918FB9C}</Project>
       <Name>WebApiDemo.Core</Name>

@@ -5,19 +5,20 @@ using System.Threading.Tasks;
 
 namespace Fogy.Core.Application.Services
 {
-    public interface IAsyncCrudAppService<TEntity, TEntityDto, TPrimaryKey, in TInsertInput, in TUpdateInput> : IApplicationService
-        where TEntity : class, IEntity<TPrimaryKey>
+    public interface IAsyncCrudAppService<TEntityDto, TPrimaryKey, in TGetAllInput, in TInsertInput, in TUpdateInput, in TGetInput, in TDeleteInput> : IApplicationService
         where TEntityDto : IEntityDto<TPrimaryKey>
         where TUpdateInput : IEntityDto<TPrimaryKey>
+        where TGetInput : IEntityDto<TPrimaryKey>
+        where TDeleteInput : IEntityDto<TPrimaryKey>
     {
-        Task<TEntityDto> Get(TPrimaryKey id);
+        Task<TEntityDto> Get(TGetInput input);
 
-        Task<TPrimaryKey> Insert(TInsertInput input);
+        Task<TEntityDto> Insert(TInsertInput input);
 
-        Task<bool> Update(TUpdateInput input);
+        Task<TEntityDto> Update(TUpdateInput input);
 
-        Task<bool> Delete(TPrimaryKey id);
+        Task<bool> Delete(TDeleteInput input);
 
-        Task<List<TEntityDto>> GetList();
+        Task<PagedResultDto<TEntityDto>> GetAll(TGetAllInput input);
     }
 }

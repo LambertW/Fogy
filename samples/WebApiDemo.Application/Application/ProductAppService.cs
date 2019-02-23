@@ -31,13 +31,13 @@ namespace WebApiDemo.Application.Application
 
         public async Task<List<ProductDto>> GetProducts()
         {
-            var list = await  _productRepository.GetListAsync();
+            var list = await  _productRepository.GetAllAsync();
             return list.MapTo<List<ProductDto>>();
         }
 
         public async Task<ProductDto> InsertAsync(ProductDto dto)
         {
-            var product = await _productRepository.InsertAsync(new Core.Domain.Product
+            var product = await _productRepository.InsertAndGetIdAsync(new Core.Domain.Product
             {
                 Name = dto.Name,
                 Price = dto.Price

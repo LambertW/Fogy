@@ -11,9 +11,5 @@ namespace Fogy.Core.Application.Services.Dto
         int PageIndex { get; set; }
 
         int ItemsPerPage { get; set; }
-
-        object Predicate { get; set; }
-
-        IList<ISortedResultItem> Sorts { get; set; }
     }
 }

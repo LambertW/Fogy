@@ -263,6 +263,10 @@
       <Project>{14bc045d-c26d-48cf-99d0-ab21577d6837}</Project>
       <Name>Fogy.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Fogy.Dapper\Fogy.Dapper.csproj">
+      <Project>{f864dbf9-adf3-47f6-b658-18b3b727e23f}</Project>
+      <Name>Fogy.Dapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Fogy.Web.Api\Fogy.Web.Api.csproj">
       <Project>{c8456c86-045c-45a6-8f20-bf46037284c9}</Project>
       <Name>Fogy.Web.Api</Name>

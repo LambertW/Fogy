@@ -17,9 +17,9 @@ namespace Fogy.Core.Domain.Repositories
     {
         #region Select/Get/Query
 
-        Task<IEnumerable<TEntity>> GetListAsync();
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
-        Task<IEnumerable<TEntity>> GetListAsync(object predicate);
+        Task<IEnumerable<TEntity>> GetAllAsync(object predicate);
 
         Task<TEntity> GetAsync(TPrimaryKey id);
 
@@ -28,7 +28,7 @@ namespace Fogy.Core.Domain.Repositories
 
         Task<int> CountAsync(object predicate);
 
-        Task<TPrimaryKey> InsertAsync(TEntity entity);
+        Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity);
 
         Task<bool> UpdateAsync(TEntity entity);
 

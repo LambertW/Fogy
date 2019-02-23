@@ -1,0 +1,17 @@
+﻿using Fogy.Core.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Fogy.Dapper.Application.Services.Dto
+{
+    public interface IDapperSortedRequest<TEntity, TPrimaryKey> where TEntity : IEntity<TPrimaryKey>
+    {
+        bool Ascending { get; set; }
+
+        Expression<Func<TEntity, object>>[] SortingExpression { get; set; }
+    }
+}
