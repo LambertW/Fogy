@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using DapperExtensions;
-using Fogy.Core.Application.Services.Dto;
 using Fogy.Core.Domain.Entities;
 using Fogy.Core.Domain.Entities.Auditing;
 using Fogy.Core.Domain.Repositories;
@@ -19,8 +18,6 @@ namespace Fogy.Dapper.Repositories
 {
     public abstract class DapperRepositoryBase<TEntity, TPrimaryKey> : IDapperRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
     {
-        private IList<ISort> sortExpre;
-
         public string ConnectionString { get; }
 
         public DapperRepositoryBase(IConnectionStringProvider provider)
@@ -74,22 +71,19 @@ namespace Fogy.Dapper.Repositories
             });
         }
 
+        public virtual async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await WithConnection(async c =>
+            {
+                return await c.DeleteAsync(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
+            });
+        }
+
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await WithConnection(async c =>
             {
                 return await c.GetListAsync<TEntity>();
-            });
-        }
-
-        public virtual async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
-        {
-            return await WithConnection(async c =>
-            {
-                if (entity is IHasCreationTime)
-                    ((IHasCreationTime)entity).CreationTime = DateTime.Now;
-
-                return await c.InsertAsync(entity);
             });
         }
 
@@ -102,18 +96,6 @@ namespace Fogy.Dapper.Repositories
 
                 return await c.UpdateAsync(entity);
             });
-        }
-
-        protected static Expression<Func<TEntity, bool>> CreateEqualityExpressionForId(TPrimaryKey id)
-        {
-            ParameterExpression lambdaParam = Expression.Parameter(typeof(TEntity));
-
-            BinaryExpression lambdaBody = Expression.Equal(
-                Expression.PropertyOrField(lambdaParam, "Id"),
-                Expression.Constant(id, typeof(TPrimaryKey))
-            );
-
-            return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
         }
 
         public virtual async Task<TEntity> SingleAsync(Expression<Func<TEntity, bool>> predicate)
@@ -149,7 +131,7 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                var result = await c.GetListAsync<TEntity>(pg, sortingExpression.ToSortable(ascending));
+                var result = await c.GetListAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending));
 
                 return result;
             });
@@ -171,7 +153,7 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                var result = await c.GetPageAsync<TEntity>(pg, sortingExpression.ToSortable(ascending), pageNumber, itemsPerPage);
+                var result = await c.GetPageAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending), pageNumber, itemsPerPage);
 
                 return result;
             });
@@ -190,14 +172,6 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 return await c.CountAsync<TEntity>(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
-            });
-        }
-
-        public virtual async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await WithConnection(async c =>
-            {
-                return await c.DeleteAsync(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
             });
         }
 
@@ -225,12 +199,35 @@ namespace Fogy.Dapper.Repositories
             });
         }
 
+        public virtual async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
+        {
+            return await WithConnection(async c =>
+            {
+                if (entity is IHasCreationTime)
+                    ((IHasCreationTime)entity).CreationTime = DateTime.Now;
+
+                return await c.InsertAsync(entity);
+            });
+        }
+
         public virtual async Task InsertAsync(TEntity entity)
         {
             await WithConnection(async c =>
             {
                 return await c.InsertAsync(entity);
             });
+        }
+
+        protected static Expression<Func<TEntity, bool>> CreateEqualityExpressionForId(TPrimaryKey id)
+        {
+            ParameterExpression lambdaParam = Expression.Parameter(typeof(TEntity));
+
+            BinaryExpression lambdaBody = Expression.Equal(
+                Expression.PropertyOrField(lambdaParam, "Id"),
+                Expression.Constant(id, typeof(TPrimaryKey))
+            );
+
+            return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
         }
     }
 

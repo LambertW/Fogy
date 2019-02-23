@@ -128,9 +128,13 @@ namespace Fogy.Dapper.Application.Services
             return new Tuple<Expression<Func<TEntity, object>>[], bool>(sortingExpression, asceding);
         }
 
-        private Expression<Func<TEntity, bool>> ApplyFiltering(TGetAllInput input)
+        protected virtual Expression<Func<TEntity, bool>> ApplyFiltering(TGetAllInput input)
         {
-            throw new NotImplementedException();
+            var filterInput = input as IDapperFilterRequest<TEntity, TPrimaryKey>;
+            if (filterInput != null)
+                return filterInput.FiltersExpression;
+
+            return null;
         }
 
         public async virtual Task<List<TEntityDto>> GetList(Expression<Func<TEntity, bool>> predicate)

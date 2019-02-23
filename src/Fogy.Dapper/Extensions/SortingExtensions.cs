@@ -1,5 +1,6 @@
 ﻿using DapperExtensions;
 using Fogy.Core;
+using Fogy.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,16 @@ namespace Fogy.Dapper.Extensions
 {
     internal static class SortingExtensions
     {
-        public static List<ISort> ToSortable<T>(this Expression<Func<T, object>>[] sortingExpression, bool ascending = true)
+        public static List<ISort> ToSortable<TEntity, TPrimaryKey>(this Expression<Func<TEntity, object>>[] sortingExpression, bool ascending = true) where TEntity : class, IEntity<TPrimaryKey>
         {
-            Check.NotNullOrEmpty(sortingExpression, nameof(sortingExpression));
-
             var sortList = new List<ISort>();
+
+            if(sortingExpression == null || !sortingExpression.Any())
+            {
+                sortList.Add(new Sort { Ascending = ascending, PropertyName = nameof(IEntity.Id) });
+                return sortList;
+            }
+
             sortingExpression.ToList().ForEach(sortExpression =>
             {
                 MemberInfo sortProperty = ReflectionHelper.GetProperty(sortExpression);
