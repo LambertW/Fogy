@@ -213,6 +213,9 @@ namespace Fogy.Dapper.Repositories
         {
             await WithConnection(async c =>
             {
+                if (entity is IHasCreationTime)
+                    ((IHasCreationTime)entity).CreationTime = DateTime.Now;
+
                 return await c.InsertAsync(entity);
             });
         }
