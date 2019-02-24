@@ -50,7 +50,5 @@ namespace Fogy.Dapper.Repositories
         Task<bool> DeleteAsync(TEntity entity);
 
         Task<bool> DeleteAsync(TPrimaryKey id);
-
-        Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

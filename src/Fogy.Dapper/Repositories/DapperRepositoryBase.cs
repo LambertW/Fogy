@@ -70,14 +70,6 @@ namespace Fogy.Dapper.Repositories
             });
         }
 
-        public virtual async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            return await WithConnection(async c =>
-            {
-                return await c.DeleteAsync(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
-            });
-        }
-
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await WithConnection(async c =>
