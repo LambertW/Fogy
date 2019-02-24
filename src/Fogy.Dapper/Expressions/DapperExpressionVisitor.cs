@@ -86,7 +86,6 @@ namespace Fogy.Dapper.Expressions
             pg.Predicates.Add(field);
         }
 
-
         #region The visit methods override
         protected override Expression VisitBinary(BinaryExpression node)
         {
@@ -186,6 +185,20 @@ namespace Fogy.Dapper.Expressions
                 AddField(me, op, arg, _unarySpecified);
 
                 // reset if applicable
+                _unarySpecified = false;
+
+                return node;
+            }
+
+            // In/NotIn Queries
+            if(node.Type == typeof(bool) && node.Method.DeclaringType == typeof(ExpressionExtensions))
+            {
+                var me = (MemberExpression)node.Arguments[0];
+                object arg = ((ConstantExpression)node.Arguments[1]).Value;
+                var op = Operator.Eq;
+
+                AddField(me, op, arg, _unarySpecified);
+
                 _unarySpecified = false;
 
                 return node;

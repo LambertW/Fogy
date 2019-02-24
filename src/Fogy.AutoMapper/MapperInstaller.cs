@@ -23,9 +23,12 @@ namespace Fogy.AutoMapper
 
         protected override void Load(ContainerBuilder builder)
         {
+            var assemblies = new AssemblyFinder().GetAllAssemblies();
             Action<IMapperConfigurationExpression> configurer = configuration =>
             {
-                FindAndAutoMapTypes(configuration);
+                FindAndAutoMapTypes(configuration, assemblies);
+
+                FindAndAddProfiles(configuration, assemblies);
             };
 
             Mapper.Initialize(configurer);
@@ -38,10 +41,18 @@ namespace Fogy.AutoMapper
                 .PropertiesAutowired();
         }
 
-        private void FindAndAutoMapTypes(IMapperConfigurationExpression configuration)
+        private void FindAndAddProfiles(IMapperConfigurationExpression configuration, List<Assembly> assemblies)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            var profileType = typeof(Profile);
+            var filterAssemblies = assemblies
+                .Where(t => !t.FullName.ToUpper().StartsWith("AUTOMAPPER"))
+                .Where(t => t.GetTypes().Any(inner => profileType.IsAssignableFrom(inner) && inner != profileType)).ToArray();
 
+            configuration.AddProfiles(filterAssemblies);
+        }
+
+        private void FindAndAutoMapTypes(IMapperConfigurationExpression configuration, List<Assembly> assemblies)
+        {
             var types = assemblies.SelectMany(t => t.GetTypes()).Where(t =>
             {
                 var typeInfo = t.GetTypeInfo();

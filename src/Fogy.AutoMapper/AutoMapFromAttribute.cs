@@ -10,7 +10,7 @@ namespace Fogy.AutoMapper
 {
     public class AutoMapFromAttribute : AutoMapAttributeBase
     {
-        public MemberList MemberList { get; set; } = MemberList.None;
+        public MemberList MemberList { get; set; } = MemberList.Destination;
 
         public AutoMapFromAttribute(params Type[] targetTypes) : base(targetTypes)
         {

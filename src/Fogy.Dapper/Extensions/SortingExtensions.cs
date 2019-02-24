@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fogy.Dapper.Extensions
+namespace Fogy.Dapper
 {
     internal static class SortingExtensions
     {

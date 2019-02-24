@@ -55,22 +55,7 @@ namespace Fogy.Dapper.Application.Services
         {
             return await Repository.DeleteAsync(input.Id);
         }
-
-        protected virtual void MapToEntity(TUpdateInput updateInput, TEntity entity)
-        {
-            ObjectMapper.Map(updateInput, entity);
-        }
-
-        protected virtual TEntity MapToEntity(TInsertInput entity)
-        {
-            return ObjectMapper.Map<TEntity>(entity);
-        }
-
-        protected virtual TEntityDto MapToEntityDto(TEntity entity)
-        {
-            return ObjectMapper.Map<TEntityDto>(entity);
-        }
-
+        
         public async virtual Task<TEntityDto> Get(TGetInput input)
         {
             var entity = await Repository.GetAsync(input.Id);
@@ -107,7 +92,13 @@ namespace Fogy.Dapper.Application.Services
 
             totalCount = await Repository.CountAsync(expression);
 
-            return new PagedResultDto<TEntityDto>(pageNumber, itemsPerPage, totalCount, list.Select(MapToEntityDto).ToList());
+            return new PagedResultDto<TEntityDto>(pageNumber, itemsPerPage, totalCount, MapToEntityDtoList(list.ToList()));
+        }
+
+        public async virtual Task<List<TEntityDto>> GetList(Expression<Func<TEntity, bool>> predicate)
+        {
+            var list = await Repository.GetAllAsync(predicate);
+            return MapToEntityDtoList(list.ToList());
         }
 
         protected virtual Tuple<Expression<Func<TEntity, object>>[], bool> ApplySorting(TGetAllInput input)
@@ -115,7 +106,7 @@ namespace Fogy.Dapper.Application.Services
             Expression<Func<TEntity, object>>[] sortingExpression;
             var asceding = true;
             var sortInput = input as IDapperSortedRequest<TEntity, TPrimaryKey>;
-            if(sortInput != null)
+            if (sortInput != null)
             {
                 asceding = sortInput.Ascending;
                 sortingExpression = sortInput.SortingExpression?.ToArray();
@@ -137,10 +128,24 @@ namespace Fogy.Dapper.Application.Services
             return null;
         }
 
-        public async virtual Task<List<TEntityDto>> GetList(Expression<Func<TEntity, bool>> predicate)
+        protected virtual void MapToEntity(TUpdateInput updateInput, TEntity entity)
         {
-            var list = await Repository.GetAllAsync(predicate);
-            return list.Select(t => MapToEntityDto(t)).ToList();
+            ObjectMapper.Map(updateInput, entity);
+        }
+
+        protected virtual TEntity MapToEntity(TInsertInput entity)
+        {
+            return ObjectMapper.Map<TEntity>(entity);
+        }
+
+        protected virtual TEntityDto MapToEntityDto(TEntity entity)
+        {
+            return ObjectMapper.Map<TEntityDto>(entity);
+        }
+
+        protected virtual List<TEntityDto> MapToEntityDtoList(List<TEntity> entities)
+        {
+            return ObjectMapper.Map<List<TEntityDto>>(entities);
         }
     }
 }

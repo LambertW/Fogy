@@ -4,7 +4,6 @@ using Fogy.Core.Domain.Entities;
 using Fogy.Core.Domain.Entities.Auditing;
 using Fogy.Core.Domain.Repositories;
 using Fogy.Dapper.Expressions;
-using Fogy.Dapper.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
