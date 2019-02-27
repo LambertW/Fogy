@@ -14,10 +14,6 @@ namespace Fogy.Core.Application.Services.Dto
 
         public int PageIndex { get; set; } = 1;
 
-        public int ItemsPerPage { get; set; } = 10;
-
-        public object Predicate { get; set; }
-
-        public IList<ISortedResultItem> Sorts { get; set; } = new List<ISortedResultItem>();
+        public int PageSize { get; set; } = 10;
     }
 }

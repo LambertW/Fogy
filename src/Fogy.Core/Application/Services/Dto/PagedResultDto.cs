@@ -34,7 +34,7 @@ namespace Fogy.Core.Application.Services.Dto
         {
             CurrentPage = request.PageIndex;
             TotalItems = totalItems;
-            ItemsPerPage = request.ItemsPerPage;
+            ItemsPerPage = request.PageSize;
             Items = items;
         }
 

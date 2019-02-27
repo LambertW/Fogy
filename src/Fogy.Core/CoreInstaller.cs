@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Fogy.Core.Dependency;
 using Fogy.Core.Domain.Repositories;
+using Fogy.Core.Domain.Uow;
 using Fogy.Core.Logging;
 using Fogy.Core.Reflection;
 
@@ -24,6 +25,8 @@ namespace Fogy.Core
             builder.RegisterType<AssemblyFinder>().As<IAssemblyFinder>().SingleInstance();
 
             builder.RegisterType<ConnectionStringProvider>().As<IConnectionStringProvider>().IfNotRegistered(typeof(IConnectionStringProvider)).SingleInstance();
+            builder.RegisterType<DefaultDbConnectionProvider>().As<IDbConnectionProvider>().IfNotRegistered(typeof(IDbConnectionProvider)).InstancePerRequest();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().IfNotRegistered(typeof(IUnitOfWork)).InstancePerRequest();
 
             var assemblyFinder = new AssemblyFinder();
             var assemblies = assemblyFinder.GetAllAssemblies();

@@ -95,9 +95,13 @@
     <Compile Include="Domain\Entities\Auditing\IHasModificationTime.cs" />
     <Compile Include="Domain\Entities\IEntity.cs" />
     <Compile Include="Domain\Entities\IPassivable.cs" />
-    <Compile Include="Domain\Repositories\ConnectionStringProvider.cs" />
-    <Compile Include="Domain\Repositories\IConnectionStringProvider.cs" />
+    <Compile Include="Domain\Uow\ConnectionStringProvider.cs" />
+    <Compile Include="Domain\Uow\DefaultDbConnectionProvider.cs" />
+    <Compile Include="Domain\Uow\IConnectionStringProvider.cs" />
     <Compile Include="Domain\Repositories\IRepository.cs" />
+    <Compile Include="Domain\Uow\IDbConnectionProvider.cs" />
+    <Compile Include="Domain\Uow\IUnitOfWork.cs" />
+    <Compile Include="Domain\Uow\UnitOfWork.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Json\JsonExtensions.cs" />

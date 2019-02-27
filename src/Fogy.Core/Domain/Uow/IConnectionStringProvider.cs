@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fogy.Core.Domain.Repositories
+namespace Fogy.Core.Domain.Uow
 {
     public interface IConnectionStringProvider : ISingletonDependency
     {

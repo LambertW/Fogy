@@ -10,6 +10,6 @@ namespace Fogy.Core.Application.Services.Dto
     {
         int PageIndex { get; set; }
 
-        int ItemsPerPage { get; set; }
+        int PageSize { get; set; }
     }
 }

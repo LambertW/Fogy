@@ -3,6 +3,7 @@ using DapperExtensions;
 using Fogy.Core.Domain.Entities;
 using Fogy.Core.Domain.Entities.Auditing;
 using Fogy.Core.Domain.Repositories;
+using Fogy.Core.Domain.Uow;
 using Fogy.Dapper.Expressions;
 using System;
 using System.Collections.Generic;
@@ -17,23 +18,25 @@ namespace Fogy.Dapper.Repositories
 {
     public abstract class DapperRepositoryBase<TEntity, TPrimaryKey> : IDapperRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
     {
-        public string ConnectionString { get; }
+        public IDbConnection DbConnection { get; set; }
+        public IUnitOfWork UnitOfWork { get; set; }
+        public IDbTransaction DbTransaction { get; set; }
 
-        public DapperRepositoryBase(IConnectionStringProvider provider)
+        public DapperRepositoryBase(IUnitOfWork unitOfWork)
         {
-            ConnectionString = provider.GetConnectionString();
+            UnitOfWork = unitOfWork;
+            DbConnection = unitOfWork.Connection;
+            DbTransaction = unitOfWork.Transaction;
         }
 
         protected async Task<T> WithConnection<T>(Func<IDbConnection, Task<T>> executeFunc)
         {
             try
             {
-                using (var connection = new SqlConnection(ConnectionString))
-                {
-                    connection.Open();
+                if (DbConnection.State != ConnectionState.Open)
+                    DbConnection.Open();
 
-                    return await executeFunc(connection);
-                }
+                return await executeFunc(DbConnection);
             }
             catch (TimeoutException ex)
             {
@@ -53,7 +56,7 @@ namespace Fogy.Dapper.Repositories
                     ((IHasDeletionTime)entity).DeletionTime = DateTime.Now;
                 //TODO SoftDelete
 
-                return await c.DeleteAsync(entity);
+                return await c.DeleteAsync(entity, DbTransaction);
             });
         }
 
@@ -61,12 +64,12 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                var entity = await c.GetAsync<TEntity>(id);
+                var entity = await c.GetAsync<TEntity>(id, DbTransaction);
 
                 if (entity is IHasDeletionTime)
                     ((IHasDeletionTime)entity).DeletionTime = DateTime.Now;
 
-                return await c.DeleteAsync(entity);
+                return await c.DeleteAsync(entity, DbTransaction);
             });
         }
 
@@ -74,7 +77,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.GetListAsync<TEntity>();
+                return await c.GetListAsync<TEntity>(DbTransaction);
             });
         }
 
@@ -85,7 +88,7 @@ namespace Fogy.Dapper.Repositories
                 if (entity is IHasModificationTime)
                     ((IHasModificationTime)entity).LastModificationTime = DateTime.Now;
 
-                return await c.UpdateAsync(entity);
+                return await c.UpdateAsync(entity, DbTransaction);
             });
         }
 
@@ -93,7 +96,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.GetAsync<TEntity>(predicate);
+                return await c.GetAsync<TEntity>(predicate, DbTransaction);
             });
         }
 
@@ -106,7 +109,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                var result = await c.GetListAsync<TEntity>(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
+                var result = await c.GetListAsync<TEntity>(predicate.ToPredicateGroup<TEntity, TPrimaryKey>(), transaction: DbTransaction);
 
                 return result.FirstOrDefault();
             });
@@ -122,7 +125,7 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                var result = await c.GetListAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending));
+                var result = await c.GetListAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending), DbTransaction);
 
                 return result;
             });
@@ -133,7 +136,7 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                var result = await c.GetPageAsync<TEntity>(pg, new List<ISort> { new Sort { Ascending = ascending, PropertyName = sortingProperty } }, pageNumber, itemsPerPage);
+                var result = await c.GetPageAsync<TEntity>(pg, new List<ISort> { new Sort { Ascending = ascending, PropertyName = sortingProperty } }, pageNumber, itemsPerPage, DbTransaction);
 
                 return result;
             });
@@ -144,7 +147,7 @@ namespace Fogy.Dapper.Repositories
             return await WithConnection(async c =>
             {
                 var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                var result = await c.GetPageAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending), pageNumber, itemsPerPage);
+                var result = await c.GetPageAsync<TEntity>(pg, sortingExpression.ToSortable<TEntity, TPrimaryKey>(ascending), pageNumber, itemsPerPage, DbTransaction);
 
                 return result;
             });
@@ -154,7 +157,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.GetAsync<TEntity>(id);
+                return await c.GetAsync<TEntity>(id, DbTransaction);
             });
         }
 
@@ -162,7 +165,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.CountAsync<TEntity>(predicate.ToPredicateGroup<TEntity, TPrimaryKey>());
+                return await c.CountAsync<TEntity>(predicate.ToPredicateGroup<TEntity, TPrimaryKey>(), DbTransaction);
             });
         }
 
@@ -170,7 +173,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.QueryAsync<TEntity>(query, parameters);
+                return await c.QueryAsync<TEntity>(query, parameters, DbTransaction);
             });
         }
 
@@ -178,7 +181,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.QueryAsync<TAny>(query, parameters);
+                return await c.QueryAsync<TAny>(query, parameters, DbTransaction);
             });
         }
 
@@ -186,7 +189,7 @@ namespace Fogy.Dapper.Repositories
         {
             return await WithConnection(async c =>
             {
-                return await c.ExecuteAsync(query, parameters);
+                return await c.ExecuteAsync(query, parameters, DbTransaction);
             });
         }
 
@@ -197,7 +200,7 @@ namespace Fogy.Dapper.Repositories
                 if (entity is IHasCreationTime)
                     ((IHasCreationTime)entity).CreationTime = DateTime.Now;
 
-                return await c.InsertAsync(entity);
+                return await c.InsertAsync(entity, DbTransaction);
             });
         }
 
@@ -208,7 +211,7 @@ namespace Fogy.Dapper.Repositories
                 if (entity is IHasCreationTime)
                     ((IHasCreationTime)entity).CreationTime = DateTime.Now;
 
-                return await c.InsertAsync(entity);
+                return await c.InsertAsync(entity, DbTransaction);
             });
         }
 
@@ -227,8 +230,8 @@ namespace Fogy.Dapper.Repositories
 
     public abstract class DapperRepositoryBase<TEntity> : DapperRepositoryBase<TEntity, int> where TEntity : class, IEntity
     {
-        public DapperRepositoryBase(IConnectionStringProvider provider)
-            : base(provider)
+        public DapperRepositoryBase(IUnitOfWork unitOfWork)
+            : base(unitOfWork)
         {
         }
     }

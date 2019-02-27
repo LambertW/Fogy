@@ -1,5 +1,7 @@
 ﻿using Fogy.Core.Application.Services.Dto;
 using Fogy.Core.Domain.Entities;
+using Fogy.Core.Domain.Uow;
+using Fogy.Core.Extensions;
 using Fogy.Core.ObjectMapper;
 using Fogy.Dapper.Application.Services.Dto;
 using Fogy.Dapper.Repositories;
@@ -20,11 +22,14 @@ namespace Fogy.Dapper.Application.Services
         where TDeleteInput : IEntityDto<TPrimaryKey>
     {
         public virtual IObjectMapper ObjectMapper { get; set; }
+        public IUnitOfWork UnitOfWork { get; set; }
         protected readonly IDapperRepository<TEntity, TPrimaryKey> Repository;
 
-        protected AsyncCrudDapperAppServiceBase(IDapperRepository<TEntity, TPrimaryKey> repository)
+        protected AsyncCrudDapperAppServiceBase(IDapperRepository<TEntity, TPrimaryKey> repository,
+            IUnitOfWork unitOfWork)
         {
             Repository = repository;
+            UnitOfWork = unitOfWork;
         }
 
         public async virtual Task<TEntityDto> Get(TPrimaryKey id)
@@ -82,7 +87,7 @@ namespace Fogy.Dapper.Application.Services
                 pageNumber = pageInput.PageIndex - 1;
                 if (pageNumber < 0) pageNumber = 0;
 
-                itemsPerPage = pageInput.ItemsPerPage;
+                itemsPerPage = pageInput.PageSize;
                 list = await Repository.GetAllPagedAsync(expression, pageNumber, itemsPerPage, sorting.Item2, sorting.Item1);
             }
             else
@@ -122,9 +127,14 @@ namespace Fogy.Dapper.Application.Services
         protected virtual Expression<Func<TEntity, bool>> ApplyFiltering(TGetAllInput input)
         {
             var filterInput = input as IDapperFilterRequest<TEntity, TPrimaryKey>;
-            if (filterInput != null)
-                return filterInput.FiltersExpression;
+            if (filterInput != null && !filterInput.Keyword.IsNullOrWhiteSpace())
+                return ApplyFiltering(filterInput.Keyword.Trim());
 
+            return null;
+        }
+
+        protected Expression<Func<TEntity, bool>> ApplyFiltering(string keyword)
+        {
             return null;
         }
 

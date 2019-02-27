@@ -10,6 +10,6 @@ namespace Fogy.Dapper.Application.Services.Dto
 {
     public interface IDapperFilterRequest<TEntity, TPrimaryKey> where TEntity : IEntity<TPrimaryKey>
     {
-        Expression<Func<TEntity, bool>> FiltersExpression { get; set; }
+        string Keyword { get; set; }
     }
 }
