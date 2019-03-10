@@ -20,9 +20,10 @@ namespace MvcDemo.SqlSugar.Tests
 				ConnectionString = @"Data Source=(localdb)\mssqllocaldb;Initial Catalog=Elight_v1;Integrated Security=True",
 				DbType = DbType.SqlServer,
 				IsAutoCloseConnection = true,
+				InitKeyType = InitKeyType.Attribute,
 				ConfigureExternalServices = new ConfigureExternalServices
 				{
-
+					
 				}
 			});
 			_itemDemoRepository = new ItemDemoRepository(db);
@@ -77,6 +78,89 @@ namespace MvcDemo.SqlSugar.Tests
 		}
 		#endregion
 
+		#region Saveable
+		[Fact]
+		public void Saveable()
+		{
+			var item1 = GetItemDemos(1).First();
+			var item2 = GetItemDemos(1).First();
+			var item3 = GetItemDemos(1).First();
+
+			_itemDemoRepository.Insert(item1);
+
+			var beforeItemNum = _itemDemoRepository.Count();
+
+			_itemDemoRepository.InsertOrUpdate(new List<ItemDemo>
+			{
+				item1,
+				item2,
+				item3
+			});
+
+			var afterItemNum = _itemDemoRepository.Count();
+
+			Assert.True(afterItemNum - beforeItemNum == 2);
+			Assert.True(item2.Id != Guid.Empty);
+			Assert.True(item3.Id != Guid.Empty);
+		}
+		#endregion
+
+		#region Update
+		
+		[Fact]
+		public void Update_And_ReturnList()
+		{
+			var items = GetItemDemos(3);
+
+			_itemDemoRepository.InsertRange(items);
+			items.ForEach(t => t.Name = "Updated");
+			var result = _itemDemoRepository.UpdateRange(items);
+			Assert.True(result);
+
+			var list = _itemDemoRepository.AsQueryable().In(new[] { items[0].Id, items[1].Id, items[2].Id, }).ToList();
+			Assert.True(list[0].Name == "Updated");
+		}
+
+		[Fact]
+		public void UpdateEmptyPrimaryKey_ThrowsException()
+		{
+			var items = GetItemDemos(3);
+
+			Assert.Throws<ArgumentException>(
+				() => { var result = _itemDemoRepository.UpdateRange(items); });
+		}
+
+		[Fact]
+		public void Update_SoftDelete()
+		{
+			var items = GetItemDemos(2);
+			items[0].IsDeleted = false;
+			items[1].IsDeleted = true;
+
+			_itemDemoRepository.InsertRange(items);
+			items[1].Name = "Test";
+			var result = _itemDemoRepository.Update(items[1]);
+			Assert.True(!result);
+
+			var entity = _itemDemoRepository.GetById(items[1].Id);
+			Assert.True(entity.Name != "Test");
+		}
+
+		#endregion
+
+		#region Insert
+
+		[Fact]
+		public void InsertList_And_GeneratedId()
+		{
+			var items = GetItemDemos(3);
+			var list = _itemDemoRepository.InsertRange(items);
+
+			Assert.True(items[0].Id != Guid.Empty);
+			Assert.True(items[1].Id != Guid.Empty);
+			Assert.True(items[2].Id != Guid.Empty);
+		}
+		#endregion
 
 		private List<ItemDemo> GetItemDemos(int num)
 		{
@@ -86,7 +170,8 @@ namespace MvcDemo.SqlSugar.Tests
 				demos.Add(new ItemDemo
 				{
 					CreationTime = DateTime.Now,
-					Name = $"Name{i}"
+					Name = $"Name{i}",
+					IsDeleted = false
 				});
 			}
 			return demos;

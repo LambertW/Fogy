@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace MvcDemo.Core.System
 {
-	[SugarTable("dbo.Sys_Item_Demo")]
+	[SugarTable("Sys_Item_Demo")]
 	public class ItemDemo : IEntity<Guid>, IHasCreationTime, IHasModificationTime, IPassivable, ISoftDelete
 	{
+		[SugarColumn(IsPrimaryKey = true)]
 		public Guid Id { get; set; }
 
 		public string EnCode { get; set; }
