@@ -90,11 +90,13 @@
     <Compile Include="Dependency\IocManager.cs" />
     <Compile Include="Dependency\ISingletonDependency.cs" />
     <Compile Include="Dependency\ITransientDependency.cs" />
+    <Compile Include="DisposeAction.cs" />
     <Compile Include="Domain\Entities\Auditing\IHasCreationTime.cs" />
     <Compile Include="Domain\Entities\Auditing\IHasDeletionTime.cs" />
     <Compile Include="Domain\Entities\Auditing\IHasModificationTime.cs" />
     <Compile Include="Domain\Entities\IEntity.cs" />
     <Compile Include="Domain\Entities\IPassivable.cs" />
+    <Compile Include="Domain\Entities\ISoftDelete.cs" />
     <Compile Include="Domain\Uow\ConnectionStringProvider.cs" />
     <Compile Include="Domain\Uow\DefaultDbConnectionProvider.cs" />
     <Compile Include="Domain\Uow\IConnectionStringProvider.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Domain\Uow\UnitOfWork.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="FogyException.cs" />
     <Compile Include="Json\JsonExtensions.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\NullLogger.cs" />
