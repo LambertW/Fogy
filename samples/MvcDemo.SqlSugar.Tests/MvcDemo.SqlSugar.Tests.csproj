@@ -74,13 +74,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Fog\samples\MvcDemo.SqlSugar\MvcDemo.SqlSugar.csproj">
-      <Project>{8F19C37C-5631-4175-BF1F-99EA4CCEF219}</Project>
-      <Name>MvcDemo.SqlSugar</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MvcDemo.Core\MvcDemo.Core.csproj">
       <Project>{0F1B8DB0-457E-49B5-803D-C659D50D11EA}</Project>
       <Name>MvcDemo.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvcDemo.SqlSugar\MvcDemo.SqlSugar.csproj">
+      <Project>{8F19C37C-5631-4175-BF1F-99EA4CCEF219}</Project>
+      <Name>MvcDemo.SqlSugar</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
