@@ -244,7 +244,7 @@ namespace MvcDemo.SqlSugar.Repositories
 
 		protected virtual void ApplyDeleteFilterList(IDeleteable<TEntity> deleteable)
 		{
-			if (GetInterfacesOfTEntity().Contains(typeof(ISoftDelete)))
+			if (_filters[GetFilterIndex(nameof(ISoftDelete))].IsEnabled && GetInterfacesOfTEntity().Contains(typeof(ISoftDelete)))
 			{
 				var dbColumnName = Context.EntityMaintenance.GetDbColumnName<TEntity>(nameof(ISoftDelete.IsDeleted));
 				deleteable = deleteable.Where($"{dbColumnName} = 0");
@@ -332,21 +332,33 @@ namespace MvcDemo.SqlSugar.Repositories
 
 		public bool Delete(Expression<Func<TEntity, bool>> whereExpression)
 		{
+			if (GetInterfacesOfTEntity().Contains(typeof(ISoftDelete)))
+			{
+				var list = GetList(whereExpression);
+				list.ForEach(t => ((ISoftDelete)t).IsDeleted = true);
+				return AsUpdateable(list).ExecuteCommand() > 0;
+			}
+
 			return AsDeleteable().Where(whereExpression).ExecuteCommand() > 0;
 		}
 
 		public bool Delete(TEntity deleteObj)
 		{
-			return AsDeleteable().Where(deleteObj).ExecuteCommand() > 0;
+			return DeleteByIds(new TPrimaryKey[] { deleteObj.Id });
 		}
 
 		public bool DeleteById(TPrimaryKey id)
 		{
-			return AsDeleteable().In(id).ExecuteCommand() > 0;
+			return DeleteByIds(new TPrimaryKey[] { id });
 		}
 
 		public bool DeleteByIds(TPrimaryKey[] ids)
 		{
+			if(GetInterfacesOfTEntity().Contains(typeof(ISoftDelete)))
+			{
+				return Context.Ado.ExecuteCommand($"UPD {Context.EntityMaintenance.GetTableName<TEntity>()} WHERE Id = @Id AND {Context.EntityMaintenance.GetDbColumnName<TEntity>(nameof(ISoftDelete))} = ", ids) > 0;
+			}
+
 			return AsDeleteable().In(ids).ExecuteCommand() > 0;
 		}
 		#endregion
